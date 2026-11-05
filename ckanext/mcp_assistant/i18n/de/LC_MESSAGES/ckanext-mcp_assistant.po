@@ -1,0 +1,168 @@
+# German translations for ckanext-mcp_assistant.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the
+# ckanext-mcp_assistant project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-mcp_assistant 2.0.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-05 11:42+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ckanext/mcp_assistant/logic/action.py:58
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:25
+#: ckanext/mcp_assistant/views.py:58
+msgid "Please type a question."
+msgstr "Bitte geben Sie eine Frage ein."
+
+#: ckanext/mcp_assistant/views.py:63
+msgid "Not authorized"
+msgstr "Nicht berechtigt"
+
+#: ckanext/mcp_assistant/views.py:72
+msgid "Something went wrong. Please try again."
+msgstr "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+
+#: ckanext/mcp_assistant/logic/action.py:64
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:42
+msgid "The assistant is not configured yet. Please contact the administrator."
+msgstr ""
+"Der Assistent ist noch nicht eingerichtet. Bitte wenden Sie sich an die "
+"Administration."
+
+#: ckanext/mcp_assistant/logic/action.py:71
+msgid "The assistant is temporarily unavailable. Please try again later."
+msgstr ""
+"Der Assistent ist vorübergehend nicht verfügbar. Bitte versuchen Sie es "
+"später erneut."
+
+#: ckanext/mcp_assistant/logic/action.py:75
+msgid ""
+"You have asked many questions in a short time. Please try again in {minutes} "
+"minutes."
+msgstr ""
+"Sie haben in kurzer Zeit viele Fragen gestellt. Bitte versuchen Sie es in "
+"{minutes} Minuten erneut."
+
+#: ckanext/mcp_assistant/logic/action.py:85
+msgid ""
+"The data service behind the assistant is not reachable right now. Please try "
+"again later."
+msgstr ""
+"Der Datendienst hinter dem Assistenten ist gerade nicht erreichbar. Bitte "
+"versuchen Sie es später erneut."
+
+#: ckanext/mcp_assistant/logic/action.py:90
+msgid "The language model is not available right now. Please try again later."
+msgstr ""
+"Das Sprachmodell ist gerade nicht verfügbar. Bitte versuchen Sie es später "
+"erneut."
+
+#: ckanext/mcp_assistant/logic/auth.py:12
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:46
+msgid "Please log in to use the AI Assistant."
+msgstr "Bitte melden Sie sich an, um den KI-Assistenten zu nutzen."
+
+#: ckanext/mcp_assistant/templates/header.html:12
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:3
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:6
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:33
+msgid "AI Assistant"
+msgstr "KI-Assistent"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:17
+msgid "Searching the portal…"
+msgstr "Das Portal wird durchsucht …"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:18
+msgid "(no answer)"
+msgstr "(keine Antwort)"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:19
+msgid "Could not reach the server. Please check your connection and try again."
+msgstr ""
+"Der Server ist nicht erreichbar. Bitte prüfen Sie Ihre Verbindung und "
+"versuchen Sie es erneut."
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:20
+msgid "How this answer was found: 1 tool call"
+msgstr "So wurde die Antwort gefunden: 1 Tool-Aufruf"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:21
+msgid "How this answer was found: {n} tool calls"
+msgstr "So wurde die Antwort gefunden: {n} Tool-Aufrufe"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:22
+msgid "error"
+msgstr "Fehler"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:23
+msgid "You"
+msgstr "Sie"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:24
+msgid "Assistant"
+msgstr "Assistent"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:36
+msgid ""
+"Ask questions about the datasets, organizations and resources of this portal."
+" The assistant searches the portal for you and links the datasets it finds."
+msgstr ""
+"Stellen Sie Fragen zu den Datensätzen, Organisationen und Ressourcen dieses "
+"Portals. Der Assistent durchsucht das Portal für Sie und verlinkt die "
+"gefundenen Datensätze."
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:47
+msgid "Log in"
+msgstr "Anmelden"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:56
+msgid "Conversation"
+msgstr "Unterhaltung"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:60
+msgid "Your question"
+msgstr "Ihre Frage"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:62
+msgid "New conversation"
+msgstr "Neue Unterhaltung"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:68
+msgid "E.g. Which datasets are about cancer?"
+msgstr "Z. B. Welche Datensätze gibt es zu Krebs?"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:69
+msgid "Ask"
+msgstr "Fragen"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:76
+msgid "Try for example:"
+msgstr "Probieren Sie zum Beispiel:"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:84
+msgid "The assistant needs JavaScript."
+msgstr "Der Assistent benötigt JavaScript."
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:91
+msgid ""
+"Answers are generated by an AI language model from the metadata of this "
+"portal and can be incomplete. Please check the linked datasets. Your "
+"questions are sent to an external AI service; do not enter personal data."
+msgstr ""
+"Die Antworten werden von einem KI-Sprachmodell aus den Metadaten dieses "
+"Portals erzeugt und können unvollständig sein. Bitte prüfen Sie die "
+"verlinkten Datensätze. Ihre Fragen werden an einen externen KI-Dienst "
+"gesendet; geben Sie keine personenbezogenen Daten ein."
+

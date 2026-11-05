@@ -1,0 +1,77 @@
+# Config declaration for CKAN >= 2.10 (IConfigDeclaration). CKAN 2.9 ignores this file.
+#
+# The options have no `default:` on purpose: a declared default would be filled into the
+# config and hide the environment variables (CKANEXT__MCP_ASSISTANT__<NAME>, OPENAI_API_KEY,
+# ...) that ckanext/mcp_assistant/config.py also reads. The real defaults live in config.py;
+# `placeholder` shows them in `ckan config declaration mcp_assistant`.
+version: 1
+groups:
+  - annotation: ckanext-mcp_assistant
+    options:
+      - key: ckanext.mcp_assistant.mcp_url
+        placeholder: http://127.0.0.1:3000/mcp
+        description: Streamable HTTP endpoint of the MCP server (also read from MCP_URL).
+      - key: ckanext.mcp_assistant.mcp_timeout
+        placeholder: "60"
+        description: Seconds per MCP request.
+      - key: ckanext.mcp_assistant.portal_url
+        placeholder: ckan.site_url + path of ckan.root_path
+        description: >
+          CKAN portal the MCP tools query (passed as server_url). Must be reachable from the
+          MCP server. Also read from LDM_PORTAL.
+      - key: ckanext.mcp_assistant.llm.api_key
+        placeholder: ""
+        description: API key of the OpenAI-compatible LLM API (required; also read from OPENAI_API_KEY).
+      - key: ckanext.mcp_assistant.llm.model
+        placeholder: gpt-5.4-mini
+        description: Model name (also read from LLM_MODEL).
+      - key: ckanext.mcp_assistant.llm.base_url
+        placeholder: https://api.openai.com/v1
+        description: Base URL of any OpenAI-compatible /chat/completions API (also read from OPENAI_BASE_URL).
+      - key: ckanext.mcp_assistant.llm.timeout
+        placeholder: "180"
+        description: Seconds per LLM call.
+      - key: ckanext.mcp_assistant.max_tool_rounds
+        placeholder: "8"
+        description: LLM <-> tool round trips per question.
+      - key: ckanext.mcp_assistant.max_tool_output
+        placeholder: "15000"
+        description: Characters of each tool result given to the LLM.
+      - key: ckanext.mcp_assistant.max_question_chars
+        placeholder: "500"
+        description: Longer questions are cut.
+      - key: ckanext.mcp_assistant.max_history_messages
+        placeholder: "12"
+        description: Earlier messages kept for follow-up questions.
+      - key: ckanext.mcp_assistant.max_history_chars
+        placeholder: "4000"
+        description: Characters kept per earlier message.
+      - key: ckanext.mcp_assistant.tools_cache_seconds
+        placeholder: "600"
+        description: How long the MCP tool list is cached.
+      - key: ckanext.mcp_assistant.hidden_tools
+        placeholder: mqa
+        description: Tools whose name contains one of these words (space/comma separated) are not offered.
+      - key: ckanext.mcp_assistant.require_login
+        placeholder: "false"
+        description: Only logged-in users may ask.
+      - key: ckanext.mcp_assistant.rate_limit_per_hour
+        placeholder: "10"
+        description: Questions per user (or client IP) per hour; 0 disables the limit.
+      - key: ckanext.mcp_assistant.rate_limit_fail_open
+        placeholder: "true"
+        description: >
+          What to do when Redis is unreachable. true - answer without a limit (a warning is
+          logged); false - refuse questions until Redis is back.
+      - key: ckanext.mcp_assistant.path
+        placeholder: /assistant
+        description: URL path of the assistant page; the JSON endpoint is <path>/ask.
+      - key: ckanext.mcp_assistant.show_in_header
+        placeholder: "true"
+        description: Show the "AI Assistant" item in the main navigation.
+      - key: ckanext.mcp_assistant.show_tool_calls
+        placeholder: "true"
+        description: Show "How this answer was found" under each answer.
+      - key: ckanext.mcp_assistant.example_questions
+        placeholder: four example questions
+        description: Example questions on the page, separated by "|".

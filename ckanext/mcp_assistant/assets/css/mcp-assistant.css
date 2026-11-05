@@ -1,0 +1,54 @@
+/* ckanext-mcp_assistant
+ * Colours default to the LDM TIB theme greens; override the variables in your
+ * theme to re-brand. */
+.mcp-assistant {
+  --mcp-assistant-accent: #40826D;
+  --mcp-assistant-accent-dark: #296f56;
+  --mcp-assistant-soft: #f3f7f5;
+  --mcp-assistant-line: #dfe7e3;
+}
+
+/* ---------- assistant page ---------- */
+.mcp-assistant .module-content { max-width: 860px; margin: 0 auto; padding-bottom: 24px; }
+.mcp-assistant__title { margin-top: 0; }
+.mcp-assistant__title .fa { color: var(--mcp-assistant-accent); }
+.mcp-assistant__intro { font-size: 1.1em; margin-bottom: 24px; }
+
+.mcp-assistant__turn { margin: 0 0 22px; padding-bottom: 18px; border-bottom: 1px solid var(--mcp-assistant-line); }
+.mcp-assistant__q { font-weight: 600; margin-bottom: 8px; overflow-wrap: anywhere; }
+.mcp-assistant__q-icon { color: var(--mcp-assistant-accent); margin-right: 8px; font-weight: normal; }
+.mcp-assistant__a { overflow-wrap: anywhere; padding: 12px 16px; background: var(--mcp-assistant-soft); border-radius: 12px; }
+.mcp-assistant__a p:last-child, .mcp-assistant__a ul:last-child, .mcp-assistant__a ol:last-child { margin-bottom: 0; }
+.mcp-assistant__a ul, .mcp-assistant__a ol { padding-left: 22px; }
+.mcp-assistant__a code { background: #fff; }
+.mcp-assistant__a--pending { color: var(--mcp-assistant-accent); }
+.mcp-assistant__a--error { background: #fdecea; color: #a12b1f; }
+
+.mcp-assistant__labelrow { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.mcp-assistant__label { font-size: 1.15em; }
+/* CKAN core adds ":" after every form label */
+.mcp-assistant__label::after { content: none !important; }
+.mcp-assistant__row { display: flex; gap: 8px; }
+.mcp-assistant__row .form-control { flex: 1; min-width: 0; height: 42px; }
+.mcp-assistant__row .btn {
+  background: var(--mcp-assistant-accent); border-color: var(--mcp-assistant-accent); padding-left: 20px; padding-right: 20px;
+}
+.mcp-assistant__row .btn:hover, .mcp-assistant__row .btn:focus {
+  background: var(--mcp-assistant-accent-dark); border-color: var(--mcp-assistant-accent-dark);
+}
+.mcp-assistant__status { min-height: 1.5em; margin-top: 8px; }
+.mcp-assistant__new[hidden], .mcp-assistant__examples[hidden] { display: none; }
+
+.mcp-assistant__examples { margin-top: 14px; }
+.mcp-assistant__examples .btn { margin: 4px 4px 0 0; border-radius: 16px; white-space: normal; text-align: left; }
+
+.mcp-assistant__steps { margin-top: 12px; color: #666; font-size: .9em; }
+.mcp-assistant__steps summary { cursor: pointer; }
+.mcp-assistant__steps ol { padding-left: 20px; margin-top: 6px; }
+.mcp-assistant__steps li { margin: 6px 0; overflow-wrap: anywhere; }
+
+.mcp-assistant__disclaimer { margin-top: 28px; }
+
+@media (max-width: 480px) {
+  .mcp-assistant__row { flex-direction: column; }
+}

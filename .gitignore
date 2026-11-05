@@ -1,0 +1,7 @@
+# local settings with secrets: never commit
+.env
+
+__pycache__/
+*.egg-info/
+build/
+dist/

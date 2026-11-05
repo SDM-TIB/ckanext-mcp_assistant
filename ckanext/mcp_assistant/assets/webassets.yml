@@ -1,0 +1,13 @@
+mcp-assistant-js:
+  filters: rjsmin
+  output: ckanext-mcp_assistant/%(version)s_mcp-assistant.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - js/mcp-assistant.js
+
+mcp-assistant-css:
+  output: ckanext-mcp_assistant/%(version)s_mcp-assistant.css
+  contents:
+    - css/mcp-assistant.css

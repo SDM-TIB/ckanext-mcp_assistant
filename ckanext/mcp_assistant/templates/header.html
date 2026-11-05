@@ -1,0 +1,14 @@
+{% ckan_extends %}
+
+{#
+  Adds "AI Assistant" to the main navigation, after the items of the active
+  theme (Organizations, Groups, About, Demo, API in the LDM TIB theme).
+  For this override to be used, list `mcp_assistant` BEFORE the theme
+  plugin (TIBtheme) in `ckan.plugins`.
+#}
+{% block header_site_navigation_tabs %}
+  {{ super() }}
+  {% if h.mcp_assistant_show_in_header() %}
+    {{ h.build_nav_main(('mcp_assistant.index', _('AI Assistant'))) }}
+  {% endif %}
+{% endblock %}
