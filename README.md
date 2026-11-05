@@ -40,7 +40,7 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
 | Python | 3.8+ |
 | MCP server | [ondata/ckan-mcp-server](https://github.com/ondata/ckan-mcp-server) with `TRANSPORT=http`; any MCP server with Streamable HTTP works |
 | LLM | an API key for an OpenAI-compatible `/chat/completions` endpoint with tool calling |
-| Redis | the CKAN Redis, for the rate limit (optional: without it the limit is skipped) |
+| Redis | the CKAN Redis, for the rate limit. If Redis is unreachable, `rate_limit_fail_open` decides: `true` (default) answers without a limit, `false` refuses questions until Redis is back |
 
 ## Installation
 
