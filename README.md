@@ -18,7 +18,7 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
 
 ## Features
 
-- **"AI Assistant" item in the main navigation** (next to Organizations, Groups, About, Demo, API).
+- **"AI Assistant" item in the main navigation**.
 - **Assistant page** at `/assistant`: a conversation with follow-up questions, example
   questions, a "New conversation" button, and a fold-out list of the MCP tool calls behind
   each answer (can be switched off).
@@ -28,7 +28,7 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
   output trimmed before it goes to the LLM.
 - **Works on CKAN 2.9 to 2.12 / Python 3.8+.** It has a small built-in MCP client for the
   Streamable HTTP transport, written with `requests`. The official `mcp` SDK needs
-  Python ≥ 3.10. There are no extra dependencies.
+  Python ≥ 3.10.
 - **Any OpenAI-compatible LLM API** (OpenAI, vLLM, Ollama, LiteLLM, …).
 - **English and German** (`ITranslation`). Answers come in the language of the question.
 
@@ -36,7 +36,7 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
 
 | Component | Version |
 |---|---|
-| CKAN | 2.9, 2.10, 2.11, 2.12 (checked with 2.9.5, 2.11.4 and 2.12.1). Works with the Bootstrap 3 and Bootstrap 5 templates and Font Awesome 4.7 and 6; CSRF tokens (2.10+) are sent automatically; on 2.10+ the options are declared (`ckan config declaration mcp_assistant`) |
+| CKAN | 2.9, 2.10, 2.11, 2.12 |
 | Python | 3.8+ |
 | MCP server | [ondata/ckan-mcp-server](https://github.com/ondata/ckan-mcp-server) with `TRANSPORT=http`; any MCP server with Streamable HTTP works |
 | LLM | an API key for an OpenAI-compatible `/chat/completions` endpoint with tool calling |
@@ -47,8 +47,8 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
 1. Install the plugin into CKAN's virtualenv:
 
    ```bash
-   . /usr/lib/ckan/default/bin/activate
-   pip install -e /path/to/ckanext-mcp_assistant
+   git clone https://github.com/SDM-TIB/ckanext-mcp_assistant.git
+   pip install -e ./ckanext-mcp_assistant
    ```
 
 2. Add `mcp_assistant` to `ckan.plugins`, **before your theme plugin** (e.g. `TIBtheme`). CKAN
@@ -176,20 +176,6 @@ python setup.py compile_catalog      # build the .mo
 | "The assistant is temporarily unavailable" | Redis is unreachable and `rate_limit_fail_open = false` |
 | No "AI Assistant" item in the menu | `mcp_assistant` is listed after the theme in `ckan.plugins`, or `show_in_header = false` |
 | The site hangs while someone asks | single-threaded `ckan run`; see Installation step 4 |
-
-## Upgrading from ckanext-ldm_assistant 1.x
-
-Version 2.0 renamed the plugin. To upgrade an existing instance:
-
-1. `pip uninstall ckanext-ldm_assistant`, then install this package.
-2. In `ckan.plugins`, replace `ldm_assistant` with `mcp_assistant`.
-3. Rename the options from `ckanext.ldm_assistant.*` to `ckanext.mcp_assistant.*` (and
-   `CKANEXT__LDM_ASSISTANT__*` to `CKANEXT__MCP_ASSISTANT__*` in `.env`). The old names are
-   ignored. Note that the default `rate_limit_per_hour` is now `10` (was `30`).
-4. Scripts that call the API must use the new action name `mcp_assistant_ask`
-   (was `ldm_assistant_ask`). Template overrides must use `mcp_assistant/index.html`, the
-   endpoints `mcp_assistant.index` / `mcp_assistant.ask` and the helpers
-   `h.mcp_assistant_*`; the CSS classes and variables are now `mcp-assistant*`.
 
 ## License
 
