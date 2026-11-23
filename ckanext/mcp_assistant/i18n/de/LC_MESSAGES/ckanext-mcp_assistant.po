@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ckanext-mcp_assistant 2.0.0\n"
+"Project-Id-Version: ckanext-mcp_assistant 2.1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 11:42+0100\n"
+"POT-Creation-Date: 2026-11-18 11:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -19,12 +19,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: ckanext/mcp_assistant/logic/action.py:58
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:25
-#: ckanext/mcp_assistant/views.py:58
-msgid "Please type a question."
-msgstr "Bitte geben Sie eine Frage ein."
-
 #: ckanext/mcp_assistant/views.py:63
 msgid "Not authorized"
 msgstr "Nicht berechtigt"
@@ -33,20 +27,26 @@ msgstr "Nicht berechtigt"
 msgid "Something went wrong. Please try again."
 msgstr "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
 
-#: ckanext/mcp_assistant/logic/action.py:64
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:42
+#: ckanext/mcp_assistant/logic/action.py:51
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:25
+#: ckanext/mcp_assistant/views.py:83
+msgid "Please type a question."
+msgstr "Bitte geben Sie eine Frage ein."
+
+#: ckanext/mcp_assistant/logic/action.py:57
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:44
 msgid "The assistant is not configured yet. Please contact the administrator."
 msgstr ""
 "Der Assistent ist noch nicht eingerichtet. Bitte wenden Sie sich an die "
 "Administration."
 
-#: ckanext/mcp_assistant/logic/action.py:71
+#: ckanext/mcp_assistant/logic/action.py:64
 msgid "The assistant is temporarily unavailable. Please try again later."
 msgstr ""
 "Der Assistent ist vorübergehend nicht verfügbar. Bitte versuchen Sie es "
 "später erneut."
 
-#: ckanext/mcp_assistant/logic/action.py:75
+#: ckanext/mcp_assistant/logic/action.py:68
 msgid ""
 "You have asked many questions in a short time. Please try again in {minutes} "
 "minutes."
@@ -54,7 +54,7 @@ msgstr ""
 "Sie haben in kurzer Zeit viele Fragen gestellt. Bitte versuchen Sie es in "
 "{minutes} Minuten erneut."
 
-#: ckanext/mcp_assistant/logic/action.py:85
+#: ckanext/mcp_assistant/logic/action.py:78
 msgid ""
 "The data service behind the assistant is not reachable right now. Please try "
 "again later."
@@ -62,21 +62,39 @@ msgstr ""
 "Der Datendienst hinter dem Assistenten ist gerade nicht erreichbar. Bitte "
 "versuchen Sie es später erneut."
 
-#: ckanext/mcp_assistant/logic/action.py:90
+#: ckanext/mcp_assistant/logic/action.py:82
 msgid "The language model is not available right now. Please try again later."
 msgstr ""
 "Das Sprachmodell ist gerade nicht verfügbar. Bitte versuchen Sie es später "
 "erneut."
 
+#: ckanext/mcp_assistant/logic/action.py:112
+msgid ""
+"This portal answers questions in the background: use mcp_assistant_ask_start "
+"and mcp_assistant_result."
+msgstr ""
+"Dieses Portal beantwortet Fragen im Hintergrund: Verwenden Sie "
+"mcp_assistant_ask_start und mcp_assistant_result."
+
+#: ckanext/mcp_assistant/logic/action.py:163
+msgid "This answer is no longer available. Please ask again."
+msgstr "Diese Antwort ist nicht mehr verfügbar. Bitte stellen Sie die Frage erneut."
+
+#: ckanext/mcp_assistant/logic/action.py:189
+msgid "The assistant could not answer this question in time. Please try again."
+msgstr ""
+"Der Assistent konnte diese Frage nicht rechtzeitig beantworten. Bitte "
+"versuchen Sie es erneut."
+
 #: ckanext/mcp_assistant/logic/auth.py:12
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:46
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:48
 msgid "Please log in to use the AI Assistant."
 msgstr "Bitte melden Sie sich an, um den KI-Assistenten zu nutzen."
 
 #: ckanext/mcp_assistant/templates/header.html:12
 #: ckanext/mcp_assistant/templates/mcp_assistant/index.html:3
 #: ckanext/mcp_assistant/templates/mcp_assistant/index.html:6
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:33
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:35
 msgid "AI Assistant"
 msgstr "KI-Assistent"
 
@@ -114,7 +132,17 @@ msgstr "Sie"
 msgid "Assistant"
 msgstr "Assistent"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:36
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:26
+msgid "Your question is waiting for its turn…"
+msgstr "Ihre Frage wartet, bis sie an der Reihe ist …"
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:27
+msgid "The assistant is taking too long to answer. Please try again later."
+msgstr ""
+"Der Assistent braucht zu lange für die Antwort. Bitte versuchen Sie es später"
+" erneut."
+
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:38
 msgid ""
 "Ask questions about the datasets, organizations and resources of this portal."
 " The assistant searches the portal for you and links the datasets it finds."
@@ -123,39 +151,39 @@ msgstr ""
 "Portals. Der Assistent durchsucht das Portal für Sie und verlinkt die "
 "gefundenen Datensätze."
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:47
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:49
 msgid "Log in"
 msgstr "Anmelden"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:56
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:60
 msgid "Conversation"
 msgstr "Unterhaltung"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:60
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:64
 msgid "Your question"
 msgstr "Ihre Frage"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:62
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:66
 msgid "New conversation"
 msgstr "Neue Unterhaltung"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:68
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:72
 msgid "E.g. Which datasets are about cancer?"
 msgstr "Z. B. Welche Datensätze gibt es zu Krebs?"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:69
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:73
 msgid "Ask"
 msgstr "Fragen"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:76
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:80
 msgid "Try for example:"
 msgstr "Probieren Sie zum Beispiel:"
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:84
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:88
 msgid "The assistant needs JavaScript."
 msgstr "Der Assistent benötigt JavaScript."
 
-#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:91
+#: ckanext/mcp_assistant/templates/mcp_assistant/index.html:95
 msgid ""
 "Answers are generated by an AI language model from the metadata of this "
 "portal and can be incomplete. Please check the linked datasets. Your "

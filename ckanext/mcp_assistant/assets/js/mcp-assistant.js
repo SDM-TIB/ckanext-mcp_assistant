@@ -6,6 +6,9 @@
  *
  * Options (data-module-* attributes):
  *   askUrl           URL of POST /assistant/ask
+ *   resultUrl        background mode only: URL of GET /assistant/result/JOB_ID
+ *                    (JOB_ID is replaced); the answer is fetched from there
+ *   pollTimeout      background mode: seconds to wait for an answer
  *   initialQuestion  asked right away when not empty (from ?q=...)
  *   i18n             translated strings rendered by the template
  */
@@ -59,7 +62,7 @@ ckan.module("mcp-assistant", function ($) {
   }
 
   return {
-    options: {askUrl: null, initialQuestion: "", i18n: {}},
+    options: {askUrl: null, resultUrl: null, pollTimeout: 360, initialQuestion: "", i18n: {}},
 
     initialize: function () {
       $.proxyAll(this, /_on/);
@@ -69,7 +72,9 @@ ckan.module("mcp-assistant", function ($) {
         searching: "Searching the portal…", noAnswer: "(no answer)",
         unreachable: "Could not reach the server.", stepsOne: "How this answer was found: 1 tool call",
         stepsMany: "How this answer was found: {n} tool calls", error: "error",
-        you: "You", assistant: "Assistant", empty: "Please type a question."
+        you: "You", assistant: "Assistant", empty: "Please type a question.",
+        queued: "Your question is waiting for its turn…",
+        tooLong: "The assistant is taking too long to answer. Please try again later."
       }, typeof this.options.i18n === "object" ? this.options.i18n : {});
 
       this.$log = this.$(".mcp-assistant__log");
@@ -152,6 +157,9 @@ ckan.module("mcp-assistant", function ($) {
         dataType: "json",
         headers: csrfHeaders(),
         data: JSON.stringify({question: question, history: this.history})
+      }).then(function (data) {
+        // background mode: the server only started the question
+        return (data && data.job && self.options.resultUrl) ? self.poll(data.job) : data;
       }).done(function (data) {
         var answer = (data && data.answer) || "";
         $a.removeClass("mcp-assistant__a--pending").html(render(answer || self.t.noAnswer));
@@ -159,7 +167,8 @@ ckan.module("mcp-assistant", function ($) {
         self.$new.prop("hidden", false);
         self.showSteps($turn, data && data.steps);
       }).fail(function (xhr) {
-        var msg = (xhr.responseJSON && xhr.responseJSON.error) || self.t.unreachable;
+        var msg = (xhr && xhr.message) ||
+                  (xhr && xhr.responseJSON && xhr.responseJSON.error) || self.t.unreachable;
         $a.removeClass("mcp-assistant__a--pending").addClass("mcp-assistant__a--error").text(msg);
       }).always(function () {
         self.busy = false;
@@ -168,6 +177,38 @@ ckan.module("mcp-assistant", function ($) {
         self.$input.trigger("focus");
         if (self.$form[0].scrollIntoView) { self.$form[0].scrollIntoView({block: "nearest"}); }
       });
+    },
+
+    /* Background mode: ask the server every 2 s whether the answer is ready.
+     * Resolves with the answer, rejects with the server's error (or a time-out). */
+    poll: function (job) {
+      var self = this, deferred = $.Deferred(), started = Date.now(), networkErrors = 0;
+      var url = String(this.options.resultUrl).replace("JOB_ID", encodeURIComponent(job));
+      var limit = (parseInt(this.options.pollTimeout, 10) || 360) * 1000;
+
+      function next() {
+        if (Date.now() - started > limit) {
+          deferred.reject({message: self.t.tooLong});
+          return;
+        }
+        window.setTimeout(check, 2000);
+      }
+      function check() {
+        $.ajax({url: url, dataType: "json", cache: false}).done(function (data) {
+          networkErrors = 0;
+          if (data && data.status === "pending") {
+            self.$status.text(data.state === "queued" ? self.t.queued : self.t.searching);
+            next();
+          } else {
+            deferred.resolve(data);
+          }
+        }).fail(function (xhr) {
+          // a short network hiccup must not lose the answer
+          if (xhr.status === 0 && ++networkErrors < 4) { next(); } else { deferred.reject(xhr); }
+        });
+      }
+      next();
+      return deferred.promise();
     }
   };
 });

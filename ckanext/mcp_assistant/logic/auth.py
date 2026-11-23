@@ -13,5 +13,15 @@ def mcp_assistant_ask(context, data_dict):
     return {"success": True}
 
 
+@toolkit.auth_allow_anonymous_access
+def mcp_assistant_result(context, data_dict):
+    """Same rule as asking. The action itself only hands a result to the
+    visitor who started the question."""
+    return mcp_assistant_ask(context, data_dict)
+
+
 def get_auth_functions():
-    return {"mcp_assistant_ask": mcp_assistant_ask}
+    # starting a background question is "asking"
+    return {"mcp_assistant_ask": mcp_assistant_ask,
+            "mcp_assistant_ask_start": mcp_assistant_ask,
+            "mcp_assistant_result": mcp_assistant_result}

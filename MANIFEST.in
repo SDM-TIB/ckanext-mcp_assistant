@@ -1,5 +1,6 @@
 include README.md
 include CHANGELOG.md
 include LICENSE
+recursive-include supervisor *.conf
 include requirements.txt
 recursive-include ckanext/mcp_assistant *.html *.json *.js *.css *.yml *.yaml *.po *.pot *.mo

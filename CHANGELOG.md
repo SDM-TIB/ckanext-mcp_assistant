@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0 – 2026-11-18
+
+- New **background mode** (`ckanext.mcp_assistant.background = true`) for CKAN instances that
+  serve one request at a time (`ckan run` without `--threaded`). Questions are answered by a
+  CKAN background worker (`ckan jobs worker mcp_assistant`) while the page polls for the
+  answer, so the MCP tools' requests to this CKAN no longer wait for the question's own
+  request. New options `job_queue` and `job_timeout`; new API actions
+  `mcp_assistant_ask_start` and `mcp_assistant_result`; new endpoint `<path>/result/<job>`.
+- Supervisor configuration for the worker: `supervisor/mcp-assistant-worker.conf`.
+- Normal mode is unchanged.
+
 ## 2.0.0 – 2026-11-05
 
 Breaking: the plugin was renamed from `ckanext-ldm_assistant` (plugin `ldm_assistant`) to

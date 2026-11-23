@@ -61,6 +61,17 @@ Browser ──► LDM /assistant ──► LLM (OpenAI-compatible API)
 
 3. Configure at least the LLM key and the MCP server URL (see below). Then restart CKAN.
 
+4. **CKAN must be able to serve a second request while a question is answered**, because the
+   MCP tools query this same CKAN over HTTP. Choose one:
+   - **Normal mode:** run CKAN with several threads or workers, e.g. `ckan run --threaded`,
+     `ckan.devserver.threaded = true`.
+   - **Background mode:** for a CKAN that serves one request at a time (`ckan run` without
+     `--threaded`). Questions are answered by a CKAN background worker; see
+     [Background mode](#background-mode).
+
+   With a single-threaded CKAN in normal mode, every tool call waits until the question's own
+   request is finished, times out, and the assistant answers that the portal is unreachable.
+
 
 ## Configuration
 
@@ -89,7 +100,10 @@ variable names (column "Also read from"). The names used before 2.0
 | `require_login` | `false` | | only logged-in users may ask |
 | `rate_limit_per_hour` | `10` | | questions per user (or IP) per hour; `0` = no limit |
 | `rate_limit_fail_open` | `true` | | when Redis is unreachable: `true` answers without a limit (and logs a warning), `false` refuses questions until Redis is back |
-| `path` | `/assistant` | | URL path of the assistant page; the JSON endpoint is `<path>/ask` |
+| `path` | `/assistant` | | URL path of the assistant page; the JSON endpoints are `<path>/ask` and `<path>/result/<job>` |
+| `background` | `false` | | answer questions in a CKAN background job instead of the web request; see [Background mode](#background-mode) |
+| `job_queue` | `mcp_assistant` | | background mode: name of the job queue (the worker must listen to it) |
+| `job_timeout` | `300` | | background mode: seconds a question may take in the worker; a question nobody picks up within this time is dropped |
 | `show_in_header` | `true` | | "AI Assistant" item in the main navigation |
 | `show_tool_calls` | `true` | | show "How this answer was found" under each answer |
 | `example_questions` | 4 examples | | example questions, separated by `\|` |
@@ -100,8 +114,55 @@ Example:
 ckanext.mcp_assistant.mcp_url = http://ldm_mcp:3000/mcp
 ckanext.mcp_assistant.llm.model = gpt-5.4-mini
 ckanext.mcp_assistant.rate_limit_per_hour = 10
-# the key is better kept in the environment: OPENAI_API_KEY=sk-...
 ```
+
+## Background mode
+
+For CKAN instances that serve one request at a time (`ckan run` without `--threaded`).
+
+```
+Browser ── question ──► CKAN web: checks access + rate limit, puts a job in the queue  (milliseconds)
+CKAN worker ── takes the job ──► LLM ⇄ MCP server ⇄ CKAN web API   (the web server is free)
+            ── stores the answer in Redis (10 minutes)
+Browser ── every 2 s: GET <path>/result/<job> ──► "pending" … then the answer
+```
+
+The web server only handles short requests, so it stays free for the MCP tools' API calls and
+for other visitors. Each answer is only given to the visitor (user name, or IP address) who
+asked the question.
+
+1. Enable it: `ckanext.mcp_assistant.background = true` (or
+   `CKANEXT__MCP_ASSISTANT__BACKGROUND=true` in the environment).
+2. Run a worker that listens to the queue `mcp_assistant` (and only to it, so it never runs
+   jobs of other plugins):
+
+   ```bash
+   ckan -c /etc/ckan/default/ckan.ini jobs worker mcp_assistant
+   ```
+
+   The plugin ships a [supervisor](http://supervisord.org/) configuration that starts this
+   worker, restarts it if it stops, and writes its log into the container log
+   (`docker logs`): [`supervisor/mcp-assistant-worker.conf`](supervisor/mcp-assistant-worker.conf).
+   In a Docker image, for example:
+
+   ```dockerfile
+   RUN apt-get update && apt-get install -y supervisor
+   COPY ./Plugins/ckanext-mcp_assistant/supervisor/mcp-assistant-worker.conf /etc/supervisor/conf.d/
+   ```
+
+   and in the container's entrypoint script, before CKAN itself is started:
+
+   ```sh
+   supervisord -c /etc/supervisor/supervisord.conf
+   ```
+
+3. One worker answers one question at a time; further questions wait their turn (the page shows
+   "Your question is waiting for its turn…"). For more at once, raise `numprocs` in the
+   supervisor file. Each worker needs about as much memory as one CKAN process.
+
+The worker reads the same configuration as the web server (`ckan.ini` and the environment), so
+the LLM key and MCP settings need no extra setup. Check it with
+`supervisorctl status` and `ckan -c /etc/ckan/default/ckan.ini jobs list mcp_assistant`.
 
 ## The MCP server
 
@@ -135,6 +196,18 @@ curl -X POST https://<portal>/api/3/action/mcp_assistant_ask \
 
 For follow-up questions, pass `history`, a list of `{"role": "user"|"assistant", "content": "..."}`.
 The same authorization and rate limit apply as on the web page.
+
+In [background mode](#background-mode), `mcp_assistant_ask` is not available. Start a question
+with `mcp_assistant_ask_start` (same parameters; returns `{"job": "<id>"}`) and call
+`mcp_assistant_result` with `job=<id>` until `status` is `done`:
+
+```bash
+curl -X POST https://<portal>/api/3/action/mcp_assistant_ask_start \
+     -H "Content-Type: application/json" -d '{"question": "Which datasets are about cancer?"}'
+curl "https://<portal>/api/3/action/mcp_assistant_result?job=<id>"
+# {"success": true, "result": {"status": "pending", "state": "started"}}  ... then
+# {"success": true, "result": {"status": "done", "answer": "...", "steps": [...]}}
+```
 
 ## Templates and helpers
 
@@ -175,8 +248,11 @@ python setup.py compile_catalog      # build the .mo
 | "The language model is not available" | wrong key or model, or the provider is down; details in the CKAN log |
 | "The assistant is temporarily unavailable" | Redis is unreachable and `rate_limit_fail_open = false` |
 | No "AI Assistant" item in the menu | `mcp_assistant` is listed after the theme in `ckan.plugins`, or `show_in_header = false` |
-| The site hangs while someone asks | single-threaded `ckan run`; see Installation step 4 |
+| The site hangs while someone asks, or every answer says the portal is unreachable | single-threaded `ckan run` in normal mode; see Installation step 4 |
+| The page keeps showing "Your question is waiting for its turn…" | background mode, but no worker is running: check `supervisorctl status` and the `mcp-assistant-worker` lines in the container log |
+| "This answer is no longer available" | background mode: the answer was older than 10 minutes, the question was not picked up within `job_timeout`, or it was asked from another IP address |
+| "The assistant could not answer this question in time" | background mode: the worker stopped the question after `job_timeout` seconds |
 
 ## License
 
-[AGPL v3](LICENSE), like the other LDM plugins.
+[AGPL v3](LICENSE).

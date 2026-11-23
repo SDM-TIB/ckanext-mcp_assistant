@@ -65,7 +65,18 @@ groups:
           logged); false - refuse questions until Redis is back.
       - key: ckanext.mcp_assistant.path
         placeholder: /assistant
-        description: URL path of the assistant page; the JSON endpoint is <path>/ask.
+        description: URL path of the assistant page; the JSON endpoints are <path>/ask and <path>/result/<job>.
+      - key: ckanext.mcp_assistant.background
+        placeholder: "false"
+        description: >
+          Answer questions in a CKAN background job (worker: ckan jobs worker mcp_assistant)
+          instead of the web request. For CKAN instances that serve one request at a time.
+      - key: ckanext.mcp_assistant.job_queue
+        placeholder: mcp_assistant
+        description: Background mode - name of the job queue the worker listens to.
+      - key: ckanext.mcp_assistant.job_timeout
+        placeholder: "300"
+        description: Background mode - seconds a question may take in the worker.
       - key: ckanext.mcp_assistant.show_in_header
         placeholder: "true"
         description: Show the "AI Assistant" item in the main navigation.

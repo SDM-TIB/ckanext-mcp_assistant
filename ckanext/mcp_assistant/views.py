@@ -12,7 +12,8 @@ from ckanext.mcp_assistant.logic import action as act
 log = logging.getLogger(__name__)
 
 _STATUS = {act.ERR_QUESTION: 400, act.ERR_RATE_LIMIT: 429,
-           act.ERR_NOT_CONFIGURED: 503, act.ERR_UPSTREAM: 502}
+           act.ERR_NOT_CONFIGURED: 503, act.ERR_UPSTREAM: 502,
+           act.ERR_MODE: 400, act.ERR_NOT_FOUND: 404}
 
 
 def _current_user():
@@ -48,17 +49,16 @@ def index():
         "max_chars": cfg.get_int("max_question_chars"),
         "examples": cfg.get_list("example_questions", sep="|"),
         "configured": cfg.is_configured(),
+        "background": cfg.get_bool("background"),
+        # the page gives up waiting a minute after the worker would have
+        "poll_timeout": cfg.get_int("job_timeout") + 60,
     })
 
 
-def ask():
-    """POST /assistant/ask  JSON ``{question, history}`` -> ``{answer, steps}``."""
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict):
-        return jsonify({"error": toolkit._("Please type a question.")}), 400
+def _call(action, data_dict):
+    """Run an action and turn its errors into a JSON error response."""
     try:
-        result = toolkit.get_action("mcp_assistant_ask")(_context(), {
-            "question": data.get("question"), "history": data.get("history")})
+        return jsonify(toolkit.get_action(action)(_context(), data_dict))
     except toolkit.NotAuthorized as e:
         return jsonify({"error": str(e) or toolkit._("Not authorized")}), 403
     except toolkit.ValidationError as e:
@@ -70,7 +70,25 @@ def ask():
     except Exception:  # never show a traceback to the visitor
         log.exception("mcp_assistant: unexpected error")
         return jsonify({"error": toolkit._("Something went wrong. Please try again.")}), 500
-    return jsonify(result)
+
+
+def ask():
+    """POST /assistant/ask  JSON ``{question, history}``.
+
+    Normal mode: ``{answer, steps}``. Background mode: ``{job}`` at once; the
+    page then polls :func:`result`.
+    """
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": toolkit._("Please type a question.")}), 400
+    action = "mcp_assistant_ask_start" if cfg.get_bool("background") else "mcp_assistant_ask"
+    return _call(action, {"question": data.get("question"), "history": data.get("history")})
+
+
+def result(job_id):
+    """GET /assistant/result/<job>  (background mode): ``{status: pending}`` or
+    ``{status: done, answer, steps}``."""
+    return _call("mcp_assistant_result", {"job": job_id})
 
 
 def get_blueprints():
@@ -78,4 +96,5 @@ def get_blueprints():
     assistant = Blueprint("mcp_assistant", __name__)
     assistant.add_url_rule(path, view_func=index, methods=["GET"])
     assistant.add_url_rule(path + "/ask", view_func=ask, methods=["POST"])
+    assistant.add_url_rule(path + "/result/<job_id>", view_func=result, methods=["GET"])
     return [assistant]

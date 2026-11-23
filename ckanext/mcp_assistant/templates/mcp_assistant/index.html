@@ -22,7 +22,9 @@
     'error': _('error'),
     'you': _('You'),
     'assistant': _('Assistant'),
-    'empty': _('Please type a question.')
+    'empty': _('Please type a question.'),
+    'queued': _('Your question is waiting for its turn…'),
+    'tooLong': _('The assistant is taking too long to answer. Please try again later.')
   } %}
 
   <div class="primary col-xs-12 col-12" role="main">
@@ -50,6 +52,8 @@
           <div class="mcp-assistant__app"
                data-module="mcp-assistant"
                data-module-ask-url="{{ h.url_for('mcp_assistant.ask') }}"
+               {% if background %}data-module-result-url="{{ h.url_for('mcp_assistant.result', job_id='JOB_ID') }}"
+               data-module-poll-timeout="{{ poll_timeout }}"{% endif %}
                {% if initial_question %}data-module-initial-question="{{ initial_question }}"{% endif %}
                data-module-i18n="{{ h.dump_json(i18n) }}">
 

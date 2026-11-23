@@ -45,6 +45,9 @@ OPTIONS = {
     "rate_limit_per_hour": ("10", None),
     "rate_limit_fail_open": ("true", None),
     "path": ("/assistant", None),
+    "background": ("false", None),
+    "job_queue": ("mcp_assistant", None),
+    "job_timeout": ("300", None),
     "show_in_header": ("true", None),
     "show_tool_calls": ("true", None),
     "example_questions": (

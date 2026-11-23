@@ -11,7 +11,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="ckanext-mcp_assistant",
-    version="2.0.0",
+    version="2.1.0",
     description="Natural-language assistant for CKAN portals: an LLM answers questions "
                 "about the portal through a CKAN MCP server. Originally developed for the "
                 "Leibniz Data Manager (LDM).",
